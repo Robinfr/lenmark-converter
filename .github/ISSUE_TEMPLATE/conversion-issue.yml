@@ -1,0 +1,77 @@
+name: Conversion issue
+description: Report a failed conversion or incorrect output in LenMark.
+title: "[Conversion]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem below. Example files and screenshots are helpful but optional.
+        **This issue and all attachments are public.** Share only files you are authorized
+        to make public. Remove confidential/customer information from designs, filenames,
+        reports, and screenshots. A minimal example is preferable.
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue description
+      description: What went wrong? Include any error message.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected and actual behavior
+      placeholder: |
+        Expected:
+        Actual:
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the conversion command and the steps used to view the result in LenMark. Remove private paths.
+      placeholder: |
+        1. Convert with ...
+        2. Open the EMX in ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: converter-version
+    attributes:
+      label: Converter version
+      description: Run lenmark-converter --version. If unavailable, say unknown.
+      placeholder: "0.1.2"
+    validations:
+      required: true
+  - type: input
+    id: lenmark-version
+    attributes:
+      label: LenMark version
+      description: Which LenMark version opens the converted file? Include the source application version if known, or say unknown.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and Python version
+      placeholder: "Windows 11, Python 3.14"
+    validations:
+      required: true
+  - type: upload
+    id: project-files
+    attributes:
+      label: Original and converted files (optional ZIP)
+      description: ZIP the original .emd and converted .emx together (maximum 25 MB). If conversion failed, include only the EMD. You may include a report after removing identifying paths. Do not upload confidential files.
+    validations:
+      required: false
+      accept: ".zip"
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      description: Show the problem in LenMark, preferably alongside the expected result. Remove identifying details. Maximum 10 MB per image.
+    validations:
+      required: false
+      accept: ".png,.jpg,.jpeg,.gif,.webp"

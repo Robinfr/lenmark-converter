@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Test, build and install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.15"
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q lenmark_converter tests scripts
+      - run: python -m pip install build twine uv
+      - run: python -m build
+      - run: python scripts/normalize_sdist.py
+      - run: python scripts/check_release.py
+      - run: python -m twine check dist/*
+      - name: Check installed wheel and source archive
+        shell: bash
+        run: |
+          python -m venv "$RUNNER_TEMP/wheel-check"
+          "$RUNNER_TEMP/wheel-check/bin/python3" -m pip install --no-deps dist/*.whl
+          "$RUNNER_TEMP/wheel-check/bin/python3" scripts/smoke_install.py
+          python -m venv "$RUNNER_TEMP/source-check"
+          "$RUNNER_TEMP/source-check/bin/python3" -m pip install --no-deps dist/*.tar.gz
+          "$RUNNER_TEMP/source-check/bin/python3" scripts/smoke_install.py
+      - name: Check package-name execution with a local index
+        shell: bash
+        run: |
+          uvx --isolated --python 3.15 --no-index --find-links "$GITHUB_WORKSPACE/dist" lenmark-converter --version
+          uvx --isolated --python 3.15 --no-index --find-links "$GITHUB_WORKSPACE/dist" lenmark-converter convert tests/fixtures/rectangle.emd -o "$RUNNER_TEMP/uv-converted"
+          uvx --isolated --python 3.15 --no-index --find-links "$GITHUB_WORKSPACE/dist" lenmark-converter verify "$RUNNER_TEMP/uv-converted/rectangle.emx"
+          uvx --isolated --python 3.15 --no-index --find-links "$GITHUB_WORKSPACE/dist" lenmark-converter convert tests/fixtures/rectangle.emd -o "$RUNNER_TEMP/uv-dry-run" --dry-run
+          test ! -e "$RUNNER_TEMP/uv-dry-run"

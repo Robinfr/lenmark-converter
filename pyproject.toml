@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lenmark-converter"
+version = "0.1.2"
+description = "Unofficial batch converter for LenMark 3DS EMD 3.0 projects to EMX 3.7"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Robinfr/lenmark-converter"
+Issues = "https://github.com/Robinfr/lenmark-converter/issues"
+Changelog = "https://github.com/Robinfr/lenmark-converter/blob/main/CHANGELOG.md"
+
+[project.scripts]
+lenmark-converter = "lenmark_converter.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["lenmark_converter*"]
